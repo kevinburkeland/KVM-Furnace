@@ -31,7 +31,7 @@ create_bridge() {
     fi
 
     # Check if the bridge interface already exists
-    if ip link show "$bridge_name" >/dev/null 2>&1; then
+    if ip link show dev "$bridge_name" >/dev/null 2>&1; then
         furnace_log_info "  [OK] Bridge interface '$bridge_name' already exists."
         # Verify if it has the expected gateway IP address
         if ip addr show "$bridge_name" | grep -q "$gateway_ip"; then
@@ -67,7 +67,7 @@ create_bridge() {
     furnace_log_info "Configuring virtual software switch bridge '$bridge_name'..."
 
     # 1. Create the virtual bridge device
-    if ! ip link show "$bridge_name" >/dev/null 2>&1; then
+    if ! ip link show dev "$bridge_name" >/dev/null 2>&1; then
         if ip link add name "$bridge_name" type bridge; then
             furnace_log_info "  [OK] Created virtual bridge interface '$bridge_name' successfully."
         else
@@ -77,7 +77,7 @@ create_bridge() {
     fi
 
     # 2. Enable/Up the interface state
-    if ip link set "$bridge_name" up; then
+    if ip link set dev "$bridge_name" up; then
         furnace_log_info "  [OK] Successfully set bridge '$bridge_name' interface state to UP."
     else
         furnace_log_err "Failed to bring bridge interface '$bridge_name' UP."
